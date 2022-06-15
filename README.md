@@ -1,7 +1,7 @@
 # docker-hadoop-alluxio
 # 1.Overview
 First of all, it is recommended to know about [Alluxio](https://docs.alluxio.io/os/user/stable/en/Overview.html) and [Hadoop](https://hadoop.apache.org/).  
-Through this project, you can use Docker to quickly deploy an Alluxio cluster with under storage is HDFS.In addition, all nodes in the cluster are placed in containers, so that we can deploy the cluster on one host, which is convenient for learning and experimenting with Alluxio and Hadoop.The project can only be used in the experimental environment, and temporarily does not support the production environment.
+Through this project, you can use Docker to quickly deploy an Alluxio cluster with under storage is HDFS.In addition, all nodes in the cluster are placed in containers, so that we can deploy the cluster on one host, which is convenient for learning and experimenting with Alluxio and Hadoop.The project can only be used in the experimental environment, and temporarily does not support the production environment.Finally, an example is given using mapreduce based on hdfs and alluxio respectively.
 # 2.Quick Start Guide
 ## 2.1 Deploy Alluxio container cluster
 Download the whole project: 
@@ -104,6 +104,33 @@ datanode1:<IP_address>:9864
 datanode2:<IP_address>:9863  
 resource manager:<IP_address>:8088  
 history server:<IP_address>:8188  
+# 3. Example: Mapreduce
+First, you need to copy alluxio-2.8.0-client.jar to the directory of all hadoop containers. Alluxio-2.8.0-client.jar was originally in the alluxio file, but now it has been downloaded to the project file. Execute the mapreduce.sh file:
+```
+./mapreduce.sh
+```
+Enter the alluxio-master container, create the wordcount directory, and copy the LICENSE file into the file system:
+```
+//alluxio-master container
+./bin/alluxio fs mkdir /wordcount
+./bin/alluxio fs copyFromLocal LICENSE /wordcount/input.txt
+```
+This command will copy the LICENSE file into the Alluxio namespace with the path /wordcount/input.txt.  
+Enter the namenode container, we can run a MapReduce job (using Hadoop 3.2.1 as example) for wordcount:
+```
+//namenode container
+hadoop jar /opt/hadoop-3.2.1/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.1.jar wordcount alluxio://<ALLUXIO_MASTER_HOSTNAME>:19998/wordcount/input.txt alluxio://<ALLUXIO_MASTER_HOSTNAME>:19998/wordcount/output
+```
+After this job completes, the result of the wordcount will be in the /wordcount/output directory in Alluxio. You can see the resulting files by running:
+```
+./bin/alluxio fs ls /wordcount/output
+./bin/alluxio fs cat /wordcount/output/part-r-00000
+```
+On the resource manager:<IP_address>:8088 Web page, you can see the application information.
+# 4. Conclusion
+You have now successfully deployed an alluxio cluster with HDFS as the underlying storage and ran the wordcount example using mapreduce.
+
+
 
 
 
