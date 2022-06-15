@@ -41,7 +41,9 @@ docker exec alluxio-worker /etc/init.d/ssh start
 ## 2.3 Configure basic information
 Get the hostnames of alluxio-master, alluxio-worker and namenode:
 ```
-docker exec <CONTAINER_NAME> hostname
+docker exec alluxio-master hostname
+docker exec alluxio-worker hostname
+docker exec namenode hostname
 ```
 Enter the alluxio-master container:
 ```
