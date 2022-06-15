@@ -82,6 +82,7 @@ services:
   alluxio-master:
     image: sonepo/alluxio-master:1.0
     container_name: alluxio-master
+    tty: true
     ports:
       - 19999:19999
       - 19998:19998
@@ -89,6 +90,7 @@ services:
   alluxio-worker:
     image: sonepo/alluxio-worker:1.0
     container_name: alluxio-worker
+    tty: true
     ports:
       - 29999:29999
       - 30000:30000
