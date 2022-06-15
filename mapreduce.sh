@@ -1,3 +1,4 @@
+docker cp alluxio-master:/opt/alluxio/client/alluxio-2.8.0-client.jar ./
 docker cp alluxio-2.8.0-client.jar namenode:/opt/hadoop-3.2.1/share/hadoop/hdfs
 docker cp alluxio-2.8.0-client.jar namenode:/opt/hadoop-3.2.1/share/hadoop/yarn
 docker cp alluxio-2.8.0-client.jar namenode:/opt/hadoop-3.2.1/share/hadoop/mapreduce
