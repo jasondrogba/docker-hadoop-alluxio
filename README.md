@@ -6,9 +6,9 @@ Through this project, you can use Docker to quickly deploy an Alluxio cluster wi
 ## 2.1 Deploy Alluxio container cluster
 Download the whole project: 
 ```
-git clone git@github.com:jasondrogba/docker-hadoop-alluxio.git
+git clone https://github.com/jasondrogba/docker-hadoop-alluxio.git
 ```
-Move to move to directory:
+Move to directory:
 ```
 cd docker-hadoop-alluxio
 ```
@@ -16,7 +16,7 @@ Start the alluxio cluster:
 ```
 docker-compose up -d
 ```
-If the following content is displayed on the command line, the startup is successful:
+<!-- If the following content is displayed on the command line, the startup is successful:
 ```
 [+] Running 8/8
  ⠿ Container alluxio-worker   Started                                            1.2s
@@ -27,54 +27,17 @@ If the following content is displayed on the command line, the startup is succes
  ⠿ Container datanode2        Started                                            1.5s
  ⠿ Container nodemanager      Started                                            1.8s
  ⠿ Container historyserver    Started                                            1.2s
- ```
-## 2.2 Start ssh
-Enter the alluxio-master container and start ssh：
+ ``` -->
+## 2.2 Launch Alluxio cluster
+First, alluxio needs to start SSH:
 ```
-docker exec alluxio-master /etc/init.d/ssh start
+./startssh.sh
 ```
-Enter the alluxio-worker container and start ssh:
+Alluxio needs to be formatted before launching. The following command formats the Alluxio journal and worker storage directories.Execute in the alluxio-master container：
 ```
-docker exec alluxio-worker /etc/init.d/ssh start
-```
-
-## 2.3 Configure basic information
-Get the hostnames of alluxio-master, alluxio-worker and namenode:
-```
-docker exec alluxio-master hostname
-docker exec alluxio-worker hostname
-docker exec namenode hostname
-```
-Enter the alluxio-master container:
-```
+//enter alluxio-master container
 docker exec -it alluxio-master bash
-```
-Enter the /opt/alluxio directory in the container and modify the conf/alluxio-site-properties file:
-```
-cd /opt/alluxio
-vim conf/alluxio-site-properties
-```
-Modify conf/alluxio-site-properties:
-```
-# Common properties
- alluxio.master.hostname=<ALLUXIO_MASTER_HOSTNAME>
- alluxio.master.mount.table.root.ufs=hdfs://<NAMENODE_HOSTNAME>:9000
- ```
- Add alluxio-master and alluxio-worker hostnames in conf/masters and conf/workers respectively.
- ```
- //Add aluxio-master hostname in conf/masters.
- <ALLUXIO_MASTER_HOSTNAME>
- ...
- //Add aluxio-worker hostname in conf/workers.
- <ALLUXIO_WORKER_HOSTNAME>
-```
-Distribute configuration information to all nodes in the cluster:
-```
-./bin/alluxio copyDir conf/
-```
-## 2.4 Launch Alluxio cluster
-Alluxio needs to be formatted before starting the process. The following command formats the Alluxio journal and worker storage directories.Execute in the alluxio-master container：
-```
+//format the Alluxio journal and worker storage directories 
 ./bin/alluxio format
 ```
 In the master node, start the Alluxio cluster with the following command:
@@ -88,24 +51,30 @@ If the following content is displayed on the command line, the startup is succes
 -----------------------------------------
 Starting to monitor all remote services.
 -----------------------------------------
---- [ OK ] The master service @ <ALLUXIO_MASTER_HOSTNAME> is in a healthy state.
---- [ OK ] The job_master service @ <ALLUXIO_MASTER_HOSTNAME> is in a healthy state.
---- [ OK ] The worker service @ <ALLUXIO_WORKER_HOSTNAME> is in a healthy state.
---- [ OK ] The job_worker service @ <ALLUXIO_WORKER_HOSTNAME> is in a healthy state.
---- [ OK ] The proxy service @ <ALLUXIO_WORKER_HOSTNAME> is in a healthy state.
---- [ OK ] The proxy service @ <ALLUXIO_MASTER_HOSTNAME> is in a healthy state.
+--- [ OK ] The master service @ alluxio-master is in a healthy state.
+--- [ OK ] The job_master service @ alluxio-master is in a healthy state.
+--- [ OK ] The worker service @ alluxio-worker1 is in a healthy state.
+--- [ OK ] The worker service @ alluxio-worker2 is in a healthy state.
+--- [ OK ] The job_worker service @ alluxio-worker1 is in a healthy state.
+--- [ OK ] The job_worker service @ alluxio-worker2 is in a healthy state.
+--- [ OK ] The proxy service @ alluxio-worker1 is in a healthy state.
+--- [ OK ] The proxy service @ alluxio-worker2 is in a healthy state.
+--- [ OK ] The proxy service @ alluxio-master is in a healthy state.
 ```
 Alluxio comes with a simple program that writes and reads sample files in Alluxio. Run the sample program with:
 ```
 ./bin/alluxio runTests
 ```
-## 2.5 Web UI
+## 2.3 Web UI
 alluxio-master:<IP_address>:19999  
 namenode:<IP_address>:9870  
 datanode1:<IP_address>:9864  
 datanode2:<IP_address>:9863  
 resource manager:<IP_address>:8088  
-history server:<IP_address>:8188  
+history server:<IP_address>:8188 
+## 2.4  Using the Alluxio Shell
+The [Alluxio shell](https://docs.alluxio.io/os/user/stable/en/operation/User-CLI.html) provides command line operations for interacting with Alluxio. For specific tutorials, please refer to [using the alluxio shell](https://docs.alluxio.io/os/user/stable/en/overview/Getting-Started.html#:~:text=and%20worker%20respectively.-,Using%20the%20Alluxio%20Shell,-The%20Alluxio%20shell).
+
 # 3. Example: Mapreduce
 First, you need to copy alluxio-2.8.0-client.jar to the directory of all hadoop containers. Alluxio-2.8.0-client.jar was originally in the alluxio file, but now it has been downloaded to the project file. Execute the mapreduce.sh file:
 ```
