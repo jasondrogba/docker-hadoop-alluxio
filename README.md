@@ -36,9 +36,10 @@ First, alluxio needs to start SSH:
 Alluxio needs to be formatted before launching. The following command formats the Alluxio journal and worker storage directories.Execute in the alluxio-master container：
 ```
 //enter alluxio-master container
-docker exec -it alluxio-master bash
+$ docker exec -it alluxio-master bash
+
 //format the Alluxio journal and worker storage directories 
-./bin/alluxio format
+$ ./bin/alluxio format
 ```
 In the master node, start the Alluxio cluster with the following command:
 ```
