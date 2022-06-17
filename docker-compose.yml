@@ -4,6 +4,7 @@ services:
     image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
     container_name: namenode
     restart: always
+    hostname: namenode
     ports:
       - 9870:9870
       - 9000:9000   
@@ -80,22 +81,34 @@ services:
       - ./hadoop.env
 
   alluxio-master:
-    image: sonepo/alluxio-master:1.0
+    image: sonepo/alluxio-master:1.1
     container_name: alluxio-master
+    hostname: alluxio-master
     tty: true
     privileged: true
     ports:
       - 19999:19999
       - 19998:19998
 
-  alluxio-worker:
-    image: sonepo/alluxio-worker:1.0
-    container_name: alluxio-worker
+  alluxio-worker1:
+    image: sonepo/alluxio-worker:1.1
+    container_name: alluxio-worker1
+    hostname: alluxio-worker1
     tty: true
     privileged: true
     ports:
       - 29999:29999
       - 30000:30000
+
+  alluxio-worker2:
+    image: sonepo/alluxio-worker:1.1
+    container_name: alluxio-worker2
+    hostname: alluxio-worker2
+    tty: true
+    privileged: true
+    ports:
+      - 30001:29999
+      - 30002:30000
 
 volumes:
   hadoop_namenode:
