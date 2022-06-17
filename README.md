@@ -38,6 +38,9 @@ Alluxio needs to be formatted before launching. The following command formats th
 //enter alluxio-master container
 $ docker exec -it alluxio-master bash
 
+//move to alluxio
+$ cd /opt/alluxio
+
 //format the Alluxio journal and worker storage directories 
 $ ./bin/alluxio format
 ```
